@@ -1,14 +1,9 @@
 import {
   getAuth,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-// import AsyncStorage from "@react-native-async-storage/async-storage"; // React Native local storage
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { v4 as uuidv4 } from "uuid"; // Install: npm install uuid
+import { addDoc, doc, deleteDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { firestore, storage } from "./firebase";
-// import * as FileSystem from "expo-file-system";
-// import { useAuthContext } from "../context/AuthProvider";
 
 const auth = getAuth();
 
@@ -22,28 +17,17 @@ export const userReportCounts = async (id) => {
 export const loginUser = async (data) => {
   const { email, password } = data;
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const authUser = userCredential.user;
-    const userCollection = collection(firestore, "members");
-    const q = query(userCollection, where("id", "==", authUser.uid));
+    const userCollection = collection(firestore, "admin-data");
+    const q = query(userCollection, where("email", "==", email, "password", "==", password));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      throw new Error("User not found in Firestore");
+      throw new Error("Not logged.");
     }
-
-    const userDoc = querySnapshot.docs[0];
-    const userData = { id: userDoc.id, ...userDoc.data() };
-
     // Store user data locally
-    await AsyncStorage.setItem("user", JSON.stringify(userData));
-
+    localStorage.setItem("user", JSON.stringify({email, isSuper: querySnapshot.docs[0].issuper}));
     // Return stored user
-    return await getStoredUser();
+    return true;
   } catch (error) {
     console.error("Error logging in user:", error.message);
     throw error;

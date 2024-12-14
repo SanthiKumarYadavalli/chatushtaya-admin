@@ -8,7 +8,7 @@ import {
   CardContent,
   CardActions,
 } from "@mui/material";
-import { fetchContacts } from "../../backend/utils";
+import { fetchContacts, updateContact } from "../../backend/utils";
 
 // Component to Display All Contacts
 function AllContacts({ contacts, setSelectedContact }) {
@@ -21,9 +21,10 @@ function AllContacts({ contacts, setSelectedContact }) {
         <Card key={index} sx={{ mb: 2 }}>
           <CardContent>
             <Typography variant="h6">{contact.title}</Typography>
+            <Typography>{contact.description}</Typography><br />
             <Typography>WhatsApp: {contact.whatsapp}</Typography>
             <Typography>Email: {contact.email}</Typography>
-            <Typography>Mobile: {contact.mobile}</Typography>
+            <Typography>Mobile: {contact.phoneNumber}</Typography>
           </CardContent>
           <CardActions>
             <Button
@@ -89,7 +90,7 @@ function ContactDetails({ contact, onBack, onSave }) {
       <TextField
         label="Mobile"
         name="mobile"
-        value={editedContact.mobile}
+        value={editedContact.phoneNumber}
         onChange={handleChange}
         fullWidth
         margin="normal"
@@ -122,9 +123,11 @@ export default function ContactsPage() {
   const [selectedContact, setSelectedContact] = useState(null);
 
   const handleSave = (updatedContact) => {
-    const updatedContacts = [...contacts];
-    updatedContacts[selectedContact.index] = updatedContact;
-    setContacts(updatedContacts);
+    async function updateSelectedContact() {
+      await updateContact(selectedContact.id, updatedContact);
+      setContacts(await fetchContacts());
+    }
+    updateSelectedContact();
     setSelectedContact(null);
   };
 

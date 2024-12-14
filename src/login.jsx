@@ -3,24 +3,41 @@ import {
   Box,
   Container,
   Paper,
-  TextField,
-  Button,
-  Typography,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormLabel,
 } from '@mui/material';
 import LoginForm from './components/LoginForm';
+import { loginUser } from '../backend/utils';
+import { Http } from '@mui/icons-material';
+import { redirect } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('admin');
 
+  async function logUser({email, password}) {
+    try {
+      const res =  await loginUser({email, password});
+      if (res) {
+        console.log("User logged in successfully");
+        return "True";
+      }else{
+        console.log("User not logged in");
+        return "False";
+      }
+    } catch (error) {
+      console.error("Error logging in user:", error.message);
+      return "Error logging in user";
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const res = logUser({email, password});
+    if (res === "True") {
+      console.log("User logged in successfully");
+    } else {
+      console.log("User not logged in");
+    }
     console.log({ email, password, role });
   };
 

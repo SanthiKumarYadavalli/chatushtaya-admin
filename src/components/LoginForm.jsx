@@ -134,7 +134,7 @@ const LoginForm = ({ onSubmit }) => {
         }}
       />
 
-      <FormControl 
+      {/* <FormControl 
         component="fieldset" 
         sx={{ 
           '& .MuiFormLabel-root': {
@@ -167,7 +167,7 @@ const LoginForm = ({ onSubmit }) => {
             label="Super Admin"
           />
         </RadioGroup>
-      </FormControl>
+      </FormControl> */}
 
       <StyledButton
         type="submit"
