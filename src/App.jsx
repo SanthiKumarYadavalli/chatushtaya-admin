@@ -1,9 +1,11 @@
-import './App.css'
-import { Container } from '@mui/material'
-import LoginPage from './login.jsx'
+import './index.css'
+import AdminPage from './components/AdminPage'
+
 function App() {
   return (
-      <LoginPage/>
+    <div className="min-h-screen w-screen">
+      <AdminPage />
+    </div>
   )
 }
 
