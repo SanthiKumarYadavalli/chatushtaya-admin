@@ -1,12 +1,12 @@
 import './App.css'
-import { Button } from "@/components/ui/button"
+import { Container } from '@mui/material'
+import TabbedForm from './components/TabbedForm'
 
 function App() {
-
   return (
-    <div className="flex items-center justify-center">
-      <Button>Click me</Button>
-    </div>
+    <Container maxWidth="sm" style={{ marginTop: '2rem' }}>
+      <TabbedForm />
+    </Container>
   )
 }
 
