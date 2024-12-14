@@ -23,11 +23,11 @@ export default function ReportDetails({ report, onBack }) {
         {/* Title */}
         <h2 className="text-3xl font-extrabold text-gray-800 mb-4">Report Details</h2>
 
-        <Field label="Type" value={report.type.join(", ")} />
+        <Field label="Type" value={report.types.join(", ")} />
         <Field label="Location" value={report.location} />
-        <Field label="Date" value={report.date} />
-        <Field label="Time" value={report.time} />
-        <Field label="Reported by" value={report.isAnonymous ? "Anonymous" : report.user} />
+        <Field label="Date" value={report.date.toDate().toLocaleString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'})} />
+        <Field label="Time" value={report.time.toDate().toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit', hour12: false})} />
+        <Field label="Reported by" value={report.isAnonymous ? "Anonymous" : report.userId} />
         <Field label="Harasser Details" value={report.harasserDetails} />
         <Field label="Additional Information" value={report.additionalInfo} />
   
@@ -35,7 +35,7 @@ export default function ReportDetails({ report, onBack }) {
         <div className="mt-8">
           <h3 className="text-xl font-semibold text-gray-700 mb-4">Evidence</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {report.evidenceurls.map((url, index) => (
+            {report.evidence.map((url, index) => (
               <div
                 key={index}
                 className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"
@@ -74,9 +74,9 @@ export default function ReportDetails({ report, onBack }) {
   
   const Field = ({ label, value }) => (
     <div className="mt-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">{label}</h3>
+        {/* <h3 className="text-xl font-semibold text-gray-700 mb-2">{label}</h3> */}
         <p className="text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
-        {value}
+        {`${label}: ${value}`}
         </p>
     </div>
 );

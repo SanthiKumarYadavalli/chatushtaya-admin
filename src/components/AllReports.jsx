@@ -14,7 +14,7 @@ export default function AllReports({ reports, setSelectedReport }) {
                 {/* Report Type and Location */}
                 <div className="flex-grow">
                   <p className="text-lg font-semibold text-gray-800 mb-2">
-                    <strong>Type:</strong> {report.type.join(", ")}
+                    <strong>Types:</strong> {report.types.join(", ")}
                   </p>
                   <p className="text-md text-gray-600 mb-4">
                     <strong>Location:</strong> {report.location}
@@ -24,9 +24,8 @@ export default function AllReports({ reports, setSelectedReport }) {
                 {/* Date and Time */}
                 <div className="border-t border-gray-200 pt-4 mt-auto">
                   <p className="text-md text-gray-500">
-                    <strong>{report.date}</strong>
+                    <strong>{report.date.toDate().toLocaleString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'})}</strong>
                   </p>
-                  <p className="text-md text-gray-500">{report.time}</p>
                 </div>
               </div>
             </div>

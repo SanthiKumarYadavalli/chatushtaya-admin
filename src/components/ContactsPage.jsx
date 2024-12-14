@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,6 +8,7 @@ import {
   CardContent,
   CardActions,
 } from "@mui/material";
+import { fetchContacts } from "../../backend/utils";
 
 // Component to Display All Contacts
 function AllContacts({ contacts, setSelectedContact }) {
@@ -108,20 +109,15 @@ function ContactDetails({ contact, onBack, onSave }) {
 
 // Main Contacts Page Component
 export default function ContactsPage() {
-  const [contacts, setContacts] = useState([
-    {
-      title: "Student Activist",
-      whatsapp: "Building A",
-      email: "2024-12-01",
-      mobile: "10:30 AM",
-    },
-    {
-      title: "Hello",
-      whatsapp: "Building A",
-      email: "2024-12-01",
-      mobile: "10:30 AM",
-    },
-  ]);
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    async function fetchAllContacts() {
+      const contacts = await fetchContacts();
+      setContacts(contacts);
+    }
+    fetchAllContacts();
+  }, []);
 
   const [selectedContact, setSelectedContact] = useState(null);
 
