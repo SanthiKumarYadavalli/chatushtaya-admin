@@ -63,7 +63,7 @@ const App = () => {
       </div>
 
       {/* Main Content */}
-      <div className="ml-80 mt-10 flex-grow p-6">
+      <div className="ml-64 mt-10 flex-grow p-6 bg-slate-100">
         {pageContent[currentPage]}
       </div>
     </div>
