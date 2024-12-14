@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaHome, FaFileAlt, FaAddressBook, FaSignOutAlt } from 'react-icons/fa';
 import ReportsPage from './ReportsPage';
+import ContactsPage from './ContactsPage';
 
 const App = () => {
   // State to track the current page
@@ -10,7 +11,7 @@ const App = () => {
   const pageContent = {
     Home: 'Welcome to the Home page! Here you can find an overview of the site.',
     Reports: <ReportsPage />,
-    Contacts: 'Welcome to the Contacts page. Find your contacts listed here.',
+    Contacts: <ContactsPage />, 
     Logout: 'You have been logged out. Have a great day!'
   };
 
@@ -18,9 +19,10 @@ const App = () => {
     <div className="flex h-screen">
       {/* Sidebar */}
       <div className="w-64 bg-black text-white fixed h-full flex flex-col">
-        <h1 className="text-2xl font-bold p-4 border-b border-gray-700">My App</h1>
+        <h1 className="text-5xl font-bold p-4 ">My App</h1>
         <div className="flex flex-col gap-4 p-4">
           {/* Navigation Buttons */}
+          <br /><br />
           <button
             className={`flex items-center gap-2 p-3 rounded-lg hover:bg-white hover:text-black transition ${
               currentPage === 'Home' ? 'bg-white text-black' : ''
