@@ -1,8 +1,14 @@
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import {
-  getAuth,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { addDoc, doc, deleteDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
+  addDoc,
+  doc,
+  deleteDoc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { firestore, storage } from "./firebase";
 
 const auth = getAuth();
@@ -14,25 +20,26 @@ export const userReportCounts = async (id) => {
   return { reportedIncidents, anonymousReports };
 };
 
-export const loginUser = async (data) => {
-  const { email, password } = data;
+export const loginUser = async ({ email, password }) => {
   try {
-    const userCollection = collection(firestore, "admin-data");
-    const q = query(userCollection, where("email", "==", email, "password", "==", password));
+    const userCollection = collection(firestore, 'admin-data');
+    const q = query(
+      userCollection,
+      where('email', '==', email),
+      where('password', '==', password)
+    );
     const querySnapshot = await getDocs(q);
 
-    if (querySnapshot.empty) {
-      throw new Error("Not logged.");
+    if (!querySnapshot.empty) {
+      return true; // User is authenticated
     }
-    // Store user data locally
-    localStorage.setItem("user", JSON.stringify({email, isSuper: querySnapshot.docs[0].issuper}));
-    // Return stored user
-    return true;
+    return false; // Authentication failed
   } catch (error) {
-    console.error("Error logging in user:", error.message);
+    console.error('Error logging in user:', error.message);
     throw error;
   }
 };
+
 
 // export const registerUser = async (data) => {
 //   const { email, password } = data;
