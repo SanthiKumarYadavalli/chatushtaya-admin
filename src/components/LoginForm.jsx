@@ -4,15 +4,12 @@ import {
   TextField,
   Button,
   Typography,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  FormControl,
-  FormLabel,
   InputAdornment,
 } from '@mui/material';
 import { Email, Lock } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../backend/utils'; // Ensure this function is implemented correctly
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
@@ -49,6 +46,8 @@ const LoginForm = ({ onSubmit }) => {
     password: '',
     role: 'admin',
   });
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -57,9 +56,21 @@ const LoginForm = ({ onSubmit }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ formData });
+    try {
+      const isAuthenticated = await loginUser(formData); // Validate email and password
+      if (isAuthenticated) {
+        // Store user data in session storage
+        sessionStorage.setItem('user', JSON.stringify({ email: formData.email, role: formData.role }));
+        navigate('/admin'); // Redirect to Admin page
+      } else {
+        setErrorMessage('Invalid email or password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Login error:', error.message);
+      setErrorMessage('An error occurred. Please try again later.');
+    }
   };
 
   return (
@@ -77,28 +88,40 @@ const LoginForm = ({ onSubmit }) => {
       }}
     >
       <Box sx={{ mb: 3, textAlign: 'center' }}>
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          sx={{ 
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
             fontWeight: 700,
             color: '#000',
             fontSize: '3rem',
-            mb: 1
+            mb: 1,
           }}
         >
           Welcome Back
         </Typography>
-        <Typography 
-          variant="body1" 
-          sx={{ 
+        <Typography
+          variant="body1"
+          sx={{
             color: '#666',
-            mb: 3
+            mb: 3,
           }}
         >
           Please sign in to continue
         </Typography>
       </Box>
+
+      {errorMessage && (
+        <Typography
+          color="error"
+          sx={{
+            textAlign: 'center',
+            mb: 2,
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
 
       <StyledTextField
         required
@@ -134,47 +157,7 @@ const LoginForm = ({ onSubmit }) => {
         }}
       />
 
-      {/* <FormControl 
-        component="fieldset" 
-        sx={{ 
-          '& .MuiFormLabel-root': {
-            color: '#666',
-            fontSize: '0.9rem',
-          },
-        }}
-      >
-        <FormLabel component="legend">Select Role</FormLabel>
-        <RadioGroup
-          row
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          sx={{
-            justifyContent: 'center',
-            '& .MuiRadio-root': {
-              color: '#666',
-            },
-          }}
-        >
-          <FormControlLabel
-            value="admin"
-            control={<Radio />}
-            label="Admin"
-          />
-          <FormControlLabel
-            value="superadmin"
-            control={<Radio />}
-            label="Super Admin"
-          />
-        </RadioGroup>
-      </FormControl> */}
-
-      <StyledButton
-        type="submit"
-        variant="contained"
-        fullWidth
-        sx={{ mt: 2 }}
-      >
+      <StyledButton type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
         Sign In
       </StyledButton>
     </Box>
