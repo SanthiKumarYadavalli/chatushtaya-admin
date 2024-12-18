@@ -47,7 +47,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="h-12">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8"/>
+                <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8 mr-2"/>
                 <span>Admin</span>
               </Avatar>
             </SidebarMenuButton>
