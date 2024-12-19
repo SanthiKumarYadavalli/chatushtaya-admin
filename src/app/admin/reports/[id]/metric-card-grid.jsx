@@ -1,5 +1,5 @@
 import { MetricCard } from "./metric-card"
-import { CircleAlert, MapPin, User2, Calendar, Clock } from "lucide-react"
+import { CircleAlert, MapPin, User2, Calendar, Clock, Dot } from "lucide-react"
 
 export default function MetricCardGrid({ report }) {
   return (
@@ -7,8 +7,8 @@ export default function MetricCardGrid({ report }) {
       <MetricCard Icon={CircleAlert} value={report.type.join(", ")} label="Type" classes="col-span-full" />
       <MetricCard Icon={MapPin} value={report.location} label="Location" classes="md:row-start-2"/>
       <MetricCard Icon={User2} value={(report.isAnonymous) ? "Anonymous": "Jon Snow"} label="Reporter" />
-      <MetricCard Icon={Calendar} value={report.date} label="Date" />
-      <MetricCard Icon={Clock} value={report.time} label="Time" />
+      <MetricCard Icon={Clock} value={`${report.date}, ${report.time}`} label="Date" />
+      <MetricCard Icon={Dot} value={report.status} label="Status" />
     </div>
   )
 }
