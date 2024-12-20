@@ -24,13 +24,16 @@ import {
     ChevronRight,
     ChevronsLeft,
     ChevronsRight,
+    Loader2,
   } from "lucide-react"
 
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
+import Loading from "../loading"
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const table = useReactTable({
     data,
@@ -43,6 +46,15 @@ export function DataTable({ columns, data }) {
       sorting,
     },
   })
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-full">
+        <div className="fixed top-0 left-[15rem] w-full h-full z-10 bg-black opacity-50"></div>
+        <div className="mt-20"><Loading /></div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full my-3">
@@ -70,7 +82,12 @@ export function DataTable({ columns, data }) {
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                onClick={() => router.push(`/admin/reports/${row.original.id}`)}
+                onClick={
+                  () => {
+                    setIsLoading(true);
+                    router.push(`/admin/reports/${row.original.id}`)
+                  }
+                }
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 className="cursor-pointer"
