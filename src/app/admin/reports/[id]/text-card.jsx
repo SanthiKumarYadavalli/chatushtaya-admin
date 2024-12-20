@@ -7,7 +7,7 @@ export default function TextCard({ title, text }) {
           <CardTitle className="text-sm font-extralight text-primary font-poppins">{title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="font-light font-poppins">{(text) ? text : "Details not submitted."}</p>
+          <p className="font-light font-poppins">{(text) ? text : "Not submitted."}</p>
         </CardContent>
       </Card>
     )

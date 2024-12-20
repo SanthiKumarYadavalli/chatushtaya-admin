@@ -5,6 +5,7 @@ import BackButton from "@/components/back-button";
 import PendingButton from "./pending-button";
 import ResolveButton from "./resolve-button";
 import { fetchAllReports } from "@/backend/utils";
+import EditableNotes from "./editable-notes";
 
 export default async function Page({params}) {
   const id = (await params).id;
@@ -17,6 +18,7 @@ export default async function Page({params}) {
         <MetricCardGrid report={report} />
         <TextCardGrid report={report} />
         <MediaCardGrid report={report} />
+        <EditableNotes reportId={report.id} initialNotes={report.adminNotes} />
         <div className="flex justify-end gap-5 my-10">
           {(report.status === 'unreviewed') && (<PendingButton reportId={report.id} />)}
           {(report.status !== 'resolved') && (<ResolveButton reportId={report.id} />)}

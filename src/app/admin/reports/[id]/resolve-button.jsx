@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast"
 import { updateReport } from "@/backend/utils"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
+import SubmitButton from "@/components/submit-button"
  
 export default function ResolveButton({ reportId }) {
   const [openDialog, setOpenDialog] = useState(false)
@@ -54,16 +55,7 @@ export default function ResolveButton({ reportId }) {
               Close
             </Button>
           </DialogClose>
-          <Button onClick={handleConfirm} disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Please wait
-              </>
-            ) : (
-              "Confirm & Send"
-            )}
-          </Button>
+          <SubmitButton text="Confirm & Send" onClick={handleConfirm} isLoading={isLoading} />  
         </DialogFooter>
       </DialogContent>
     </Dialog>

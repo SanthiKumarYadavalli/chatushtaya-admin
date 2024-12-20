@@ -16,6 +16,7 @@ import {
 import { RatingSelection } from "./rating-selection"
 import { updateReport } from "@/backend/utils"
 import { useRouter } from "next/navigation"
+import SubmitButton from "@/components/submit-button"
  
 export default function PendingButton({ reportId }) {
   const [selectedRating, setSelectedRating] = useState(null)
@@ -56,16 +57,7 @@ export default function PendingButton({ reportId }) {
               Close
             </Button>
           </DialogClose>
-          <Button onClick={handleConfirm} disabled={isLoading || !selectedRating}>
-            {isLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Please wait
-              </>
-            ) : (
-              'Add'
-            )}
-          </Button>
+          <SubmitButton text="Add" disabled={isLoading || !selectedRating} onClick={handleConfirm} isLoading={isLoading} />
         </DialogFooter>
       </DialogContent>
     </Dialog>
