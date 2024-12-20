@@ -1,7 +1,8 @@
 "use client"
-import { Copy, Plus } from "lucide-react"
+import { Plus, Loader2, Router } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
   DialogClose,
@@ -13,11 +14,30 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { RatingSelection } from "./rating-selection"
+import { updateReport } from "@/backend/utils"
+import { useRouter } from "next/navigation"
  
-export default function PendingButton() {
+export default function PendingButton({ reportId }) {
   const [selectedRating, setSelectedRating] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const { toast } = useToast()
+  const router = useRouter()
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    await updateReport(reportId, { status: 'pending', adminPriority: selectedRating });
+    setIsLoading(false);
+    setIsDialogOpen(false);
+    toast({
+      title: 'Added to Pending',
+      duration: 1000,
+    })
+    router.refresh()
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="outline"><Plus />Add to Pending</Button>
       </DialogTrigger>
@@ -36,7 +56,16 @@ export default function PendingButton() {
               Close
             </Button>
           </DialogClose>
-          <Button type="submit">Add</Button>
+          <Button onClick={handleConfirm} disabled={isLoading || !selectedRating}>
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              'Add'
+            )}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

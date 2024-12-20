@@ -1,8 +1,9 @@
 import { columns } from './columns'
 import TableWithFilter from './table-with-filter'
-import { reports } from '../../../../backend/dummy'
+import { fetchAllReports } from '@/backend/utils';
 
-export default function Page() {
+export default async function Page() {
+  const reports = await fetchAllReports();
   return (
     <div className='flex flex-col items-center justify-center'>
       <div className="md:w-2/3 w-[90%]">

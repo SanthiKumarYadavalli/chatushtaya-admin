@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { ThemeToggleButton } from "@/components/theme-toggle-button"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function Layout({ children }) {
   return (
@@ -23,6 +24,7 @@ export default function Layout({ children }) {
           </header> */}
           {children}
         </main>
+        <Toaster />
       </SidebarInset>
     </SidebarProvider>
   )
