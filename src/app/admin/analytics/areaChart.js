@@ -25,34 +25,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-const chartData = [
-  { date: "2024-11-01", reported: 342,completed: 200 },
-  { date: "2024-10-02", reported: 97, completed:180 },
-  { date: "2024-12-03", reported: 167,completed: 120 },
-  { date: "2024-9-23", reported: 222,completed: 150 },
-  { date: "2024-12-04", reported: 242,completed: 260 },
-  { date: "2024-10-15", reported: 373,completed: 290 },
-  { date: "2024-12-22", reported: 301,completed: 340 },
-  { date: "2024-12-25", reported: 245,completed: 180 },
-  { date: "2024-11-20", reported: 409,completed: 320 },
-  { date: "2024-12-19", reported: 59, completed:110 },
-]
+
 
 const chartConfig = {
   date: {
     label: "Date",
   },
-  reported: {
-    label: "reported",
+  unreviewed: {
+    label: "unreviewed",
     color: "hsl(var(--chart-1))",
   },
-  completed: {
-    label: "completed",
+  pending: {
+    label: "pending",
     color: "hsl(var(--chart-2))",
+  },
+  resolved: {
+    label: "resolved",
+    color: "hsl(var(--chart-3))",
+  },
+  deleted: {
+    label: "deleted",
+    color: "hsl(var(--chart-4))",
   },
 }
 
-export default function Component() {
+export default function Component({chartData}) {
   const [timeRange, setTimeRange] = React.useState("365d")
 
   const filteredData = chartData.filter((item) => {
@@ -79,7 +76,7 @@ export default function Component() {
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Reports Trend</CardTitle>
           <CardDescription>
-            Showing Reports reported vs Reports completed
+            Showing Reports status trend
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -115,27 +112,51 @@ export default function Component() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillUnreviewed" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-reported)"
+                  stopColor="var(--color-unreviewed)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-reported)"
+                  stopColor="var(--color-unreviewed)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillPending" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-completed)"
+                  stopColor="var(--color-pending)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-completed)"
+                  stopColor="var(--color-pending)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillResolved" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-resolved)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-resolved)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillDeleted" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-deleted)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-deleted)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -170,18 +191,32 @@ export default function Component() {
               }
             />
             <Area
-              dataKey="completed"
+              dataKey="unreviewed"
               type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-completed)"
+              fill="url(#fillUnreviewed)"
+              stroke="var(--color-unreviewed)"
               stackId="a"
             />
             <Area
-              dataKey="reported"
+              dataKey="pending"
               type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-reported)"
-              stackId="a"
+              fill="url(#fillPending)"
+              stroke="var(--color-pending)"
+              stackId="b"
+            />
+            <Area
+              dataKey="resolved"
+              type="natural"
+              fill="url(#fillResolved)"
+              stroke="var(--color-resolved)"
+              stackId="c"
+            />
+            <Area
+              dataKey="deleted"
+              type="natural"
+              fill="url(#fillDeleted)"
+              stroke="var(--color-deleted)"
+              stackId="d"
             />
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>

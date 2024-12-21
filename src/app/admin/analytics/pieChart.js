@@ -3,6 +3,7 @@
 import * as React from "react"
 import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
+import {useState, useEffect } from "react"
 
 import {
   Card,
@@ -18,13 +19,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { status: "unreviewed", count: 275, fill: "var(--color-unreviewed)" },
-  { status: "pending", count: 200, fill: "var(--color-pending)" },
-  { status: "completed", count: 287, fill: "var(--color-completed)" },
-  { status: "suspended", count: 173, fill: "var(--color-suspended)" },
-  { status: "deleted", count: 190, fill: "var(--color-deleted)" },
-]
 
 const chartConfig = {
   count: {
@@ -56,10 +50,21 @@ const chartConfig = {
   },
 }
 
-export default function Component() {
-  const totalCount = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.count, 0)
-  }, [])
+export default function Component({chartData}) {
+  const [totalCount,setTotalCount] = useState(0);
+  const [maxStatus, setMaxStatus] = useState("unreviewed");
+  useEffect(()=>{
+    let tot=0
+    let maxi = chartData[0].count;
+    chartData.forEach((row)=>{
+      if(row.count > maxi){
+        maxi=row.count
+        setMaxStatus(row.status);
+      }
+      tot+=row.count;
+    });
+    setTotalCount(tot);
+  },[])
 
   return (
     <Card className="flex flex-col border-none w-full h-full">
@@ -119,7 +124,7 @@ export default function Component() {
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Maximum Reports are having status as<strong>unreviewed</strong>
+          Maximum Reports are having status as<strong>{maxStatus}</strong>
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total Reports status

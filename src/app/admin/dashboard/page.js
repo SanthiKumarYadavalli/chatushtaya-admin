@@ -4,12 +4,9 @@ import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
 import TopReports from "./topReports";
 import LineChartComponent from "./LineChart";
-import { fetchAllReports } from "../../../../backend/utils";
+// import { fetchAllReports } from "../../../../backend/utils";
 
 export default function page() {
-  const [areaChartData, setAreaChartData] = useState([]);
-  const [barChartData, setBarChartData] = useState([]);
-  const [pieChartData, setPieChartData] = useState([]);
   const [lineChartData, setLineChartData] = useState([]);
   const [reports, setReports] = useState([
     {
@@ -44,7 +41,7 @@ export default function page() {
   
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative mt-[-40]  ml-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative  ml-10">
       <TopReports reports={reports} />
       <div className="grid grid-rows-2 gap-2 h-full">
         <div>

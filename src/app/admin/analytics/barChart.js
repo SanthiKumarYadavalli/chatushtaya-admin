@@ -17,16 +17,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { type:"Verbal Abuse", count:200},
-  { type:"Bullying", count:120 },
-  { type:"Sexual Harassment", count:220 },
-  { type:"Stalking", count:180},
-  { type:"Cyber harassment", count:202 },
-  { type:"Discrimination", count:230 },
-  { type:"Abuse of Authority by Staff or Faculty", count:222 }
-
-]
 
 const chartConfig = {
   type: {
@@ -38,7 +28,7 @@ const chartConfig = {
   },
 }
 
-export default function Component() {
+export default function Component({chartData}) {
   return (
     <Card className="h-full border-none">
       <CardHeader>
@@ -78,7 +68,7 @@ export default function Component() {
             >
               <LabelList
                 dataKey="type"
-                position="insideLeft"
+                position="insideLeft" 
                 offset={8}
                 className="fill-[--color-label]"
                 fontSize={12}

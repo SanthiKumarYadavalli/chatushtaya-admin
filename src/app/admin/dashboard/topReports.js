@@ -43,7 +43,7 @@ export default function TopReports({ reports }) {
   };
 
   return (
-    <Card className="col-span-1 flex flex-col h-[575] shadow-md border-none">
+    <Card className="col-span-1 flex flex-col h-[575] shadow-md">
       <CardDescription className="flex flex-col h-[560] p-4 bg-black/[.05] rounded-lg">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl font-semibold">Top Reports</CardTitle>
