@@ -6,11 +6,11 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 
-export function ModeToggle() {
+export function ThemeToggleButton({classes}) {
   const { theme, setTheme } = useTheme()
 
   return (
-    <div className="mr-3">  
+    <div className={classes}>  
     {(theme === "dark") ? (
         <Button variant="outline" size="icon" onClick={() => setTheme("light")}>
             <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

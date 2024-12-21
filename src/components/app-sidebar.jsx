@@ -16,7 +16,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./mode-toggle"
 import { Separator } from "./ui/separator";
 
 // Menu items.
@@ -52,7 +51,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="h-12">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8"/>
+                <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8 mr-2"/>
                 <span>Admin</span>
               </Avatar>
             </SidebarMenuButton>
@@ -65,11 +64,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.title} className="h-10">
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url}>
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span className="text-base">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -87,13 +86,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-              <ModeToggle />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   )
 }

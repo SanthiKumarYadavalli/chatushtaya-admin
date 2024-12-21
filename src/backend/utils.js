@@ -8,6 +8,7 @@ import {
   getDocs,
   query,
   where,
+  orderBy,
 } from "firebase/firestore";
 import { firestore, storage } from "./firebase";
 
@@ -137,15 +138,28 @@ export const fetchReportsByQuery = async (filters) => {
   }
 };
 
+const getCleanedReportData = (reports) => {
+  reports.map(report => {
+    report.date = report.date.toDate();
+    report.time = report.time.toDate();
+    report.createdAt = report.createdAt.toDate();
+    report.datetime = report.date;
+    report.datetime.setHours(report.time.getHours());
+    report.datetime.setMinutes(report.time.getMinutes());
+    return report;
+  });
+  return reports;
+}
+
 export const fetchAllReports = async () => {
   try {
     const reportsCollection = collection(firestore, "reports");
-    const reportSnapshot = await getDocs(reportsCollection);
+    const reportSnapshot = await getDocs(query(reportsCollection, orderBy("createdAt", "desc")));
     const reportsList = reportSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    return reportsList;
+    return getCleanedReportData(reportsList);
   } catch (error) {
     console.error("Error fetching reports:", error);
     throw error;
