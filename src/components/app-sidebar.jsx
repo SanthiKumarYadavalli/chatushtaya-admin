@@ -36,6 +36,11 @@ const items = [
     url: "/admin/contacts",
     icon: Contact,
   },
+  {
+    title: "Analytics",
+    url: "/admin/analytics",
+    icon: Inbox,
+  },
 ]
 
 export function AppSidebar() {
