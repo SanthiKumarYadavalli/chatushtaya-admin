@@ -4,7 +4,7 @@ import { createContext, useContext, useState } from "react";
 export const ReportContext = createContext(null);
 
 const getInitialState = () => {
-    const reports = localStorage.getItem('reports');
+    const reports = typeof window !== "undefined" ? window.localStorage.getItem("reports") : null;
     return reports ? JSON.parse(reports) : [];
 }
 

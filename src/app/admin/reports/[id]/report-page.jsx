@@ -7,10 +7,34 @@ import PendingButton from "./pending-button";
 import ResolveButton from "./resolve-button";
 import EditableNotes from "./editable-notes";
 import { useReports } from "@/utils/report-context";
+import { useEffect, useState } from "react";
+import { fetchAllReports } from "@/backend/utils";
+import Loading from "../../loading";
 
 export default function ReportsPage({ id }) {
-  const { data: reports } = useReports();
-  const report = reports.find(r => r.id === id);
+  const { data: reports, setData } = useReports();
+  const [report, setReport] = useState();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setData(await fetchAllReports());
+      localStorage.setItem("reports", JSON.stringify(reports));
+    }
+    if (reports.length === 0) {
+      fetchData();
+    }
+  }, []);
+
+  useEffect(() => {
+    setReport(reports.find((r) => r.id === id));
+    setIsLoaded(true);
+  }, [reports]);
+
+  if (!isLoaded) {
+    return <Loading />
+  }
+
   return (
     <>
       <BackButton />
