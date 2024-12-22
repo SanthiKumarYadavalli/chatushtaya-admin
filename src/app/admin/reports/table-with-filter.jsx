@@ -15,16 +15,17 @@ import Loading from "../loading";
 
 export default function TableWithFilter() {
   const { data, setData, selectedStatus, selectedType, setSelectedStatus, setSelectedType } = useReports();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setIsLoading(true);
     const fetchAndSet = async () => {
       const reports = await fetchAllReports();
       localStorage.setItem("reports", JSON.stringify(reports));
       setData(reports);
+      setIsLoading(false)
     }
-    fetchAndSet();
-    setIsLoading(false);
+    if (data.length === 0) {
+      fetchAndSet();
+    }
   }, []);
 
   if (isLoading) {
