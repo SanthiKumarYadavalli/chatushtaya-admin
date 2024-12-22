@@ -17,6 +17,7 @@ import { RatingSelection } from "./rating-selection"
 import { updateReport } from "@/backend/utils"
 import { useRouter } from "next/navigation"
 import SubmitButton from "@/components/submit-button"
+import { useReports } from "@/utils/report-context"
  
 export default function PendingButton({ reportId }) {
   const [selectedRating, setSelectedRating] = useState(null)
@@ -24,10 +25,19 @@ export default function PendingButton({ reportId }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
+  const { data, setData } = useReports()
 
   const handleConfirm = async () => {
     setIsLoading(true);
     await updateReport(reportId, { status: 'pending', adminPriority: selectedRating });
+    data.forEach((r) => {
+      if (r.id === reportId) {
+        r.status = 'pending';
+        r.adminPriority = selectedRating;
+      }
+    });
+    setData(data);
+    localStorage.setItem('reports', JSON.stringify(data));
     setIsLoading(false);
     setIsDialogOpen(false);
     toast({
