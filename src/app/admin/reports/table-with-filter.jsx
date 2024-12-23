@@ -23,9 +23,7 @@ export default function TableWithFilter() {
       setData(reports);
       setIsLoading(false)
     }
-    if (data.length === 0) {
-      fetchAndSet();
-    }
+    fetchAndSet();
   }, []);
 
   if (isLoading) {
