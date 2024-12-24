@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
+import { useReports } from "@/utils/report-context"
 import { useToast } from "@/hooks/use-toast"
 import { updateReport } from "@/backend/utils"
 import { useRouter } from "next/navigation"
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input"
 import SubmitButton from "@/components/submit-button"
  
 export default function ResolveButton({ reportId }) {
+  const { data, setData } = useReports();
   const [openDialog, setOpenDialog] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [remarks, setRemarks] = useState('')
@@ -28,6 +30,14 @@ export default function ResolveButton({ reportId }) {
   const handleConfirm = async () => {
     setIsLoading(true)
     await updateReport(reportId, { status: 'resolved', adminRemarks: remarks })
+    data.forEach((r) => {
+      if (r.id === reportId) {
+        r.status = 'resolved';
+        r.adminRemarks = remarks;
+      }
+    })
+    setData(data);
+    localStorage.setItem("reports", JSON.stringify(data));
     setIsLoading(false)
     setOpenDialog(false)
     toast({

@@ -8,9 +8,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Edit, StickyNote } from 'lucide-react'
 import { updateReport } from "@/backend/utils"
 import SubmitButton from "@/components/submit-button"
+import { useReports } from "@/utils/report-context"
 
 
 export default function EditableNotesPopover({ reportId, initialNotes }) {
+  const { data, setData } = useReports()
   const [notes, setNotes] = useState(initialNotes)
   const [tempNotes, setTempNotes] = useState(notes)
   const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +22,13 @@ export default function EditableNotesPopover({ reportId, initialNotes }) {
     setNotes(tempNotes)
     setIsLoading(true)
     await updateReport(reportId, { adminNotes: tempNotes })
+    data.forEach((r) => {
+      if (r.id === reportId) {
+        r.adminNotes = tempNotes
+      }
+    })
+    setData(data)
+    localStorage.setItem("reports", JSON.stringify(data))
     setIsLoading(false)
     setIsOpen(false)
   }
