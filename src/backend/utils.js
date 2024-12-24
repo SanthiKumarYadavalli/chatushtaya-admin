@@ -166,6 +166,21 @@ export const fetchAllReports = async () => {
   }
 };
 
+export const fetchAllUsers = async () => {
+  try {
+    const usersCollection = collection(firestore, "members");
+    const userSnapShot = await getDocs(query(usersCollection));
+    const usersList = userSnapShot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return usersList;
+  } catch (error) {
+    console.error("Error fetching reports:", error);
+    throw error;
+  }
+};
+
 export const updateReport = async (reportId, updatedData) => {
   try {
     const reportRef = doc(firestore, "reports", reportId);

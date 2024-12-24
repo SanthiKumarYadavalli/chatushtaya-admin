@@ -35,6 +35,11 @@ const items = [
     url: "/admin/contacts",
     icon: Contact,
   },
+  {
+    title: "Analytics",
+    url: "/admin/analytics",
+    icon: Inbox,
+  },
 ]
 
 export function AppSidebar() {
@@ -47,7 +52,7 @@ export function AppSidebar() {
             <SidebarMenuButton asChild className="h-12">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8 mr-2"/>
-                <span>Admin</span>
+                <span>Krishna Dashboard</span>
               </Avatar>
             </SidebarMenuButton>
           </SidebarMenuItem>
