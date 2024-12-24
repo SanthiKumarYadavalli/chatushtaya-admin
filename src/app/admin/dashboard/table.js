@@ -31,45 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-const data = [
-  {
-    id: "m5gr84i9",
-    types:["Verbal Abuse", "Bullying", "Stalking"],
-    status: "unreviewed",
-    username:"Teja"
-  },
-  {
-    id: "3u1reuv4",
-    types:["Sexual Harassment","Verbal Abuse"],
-    status: "unreviewed",
-    username:"Anonymous"
-  },
-  {
-    id: "derv1ws0",
-    types:["Bullying"],
-    status: "pending",
-    username:"Anonymous"
-  },
-  {
-    id: "m5gr84i10",
-    types:["Verbal Abuse", "Stalking"],
-    status: "unreviewed",
-    username:"Pranavi"
-  },
-  {
-    id: "m5gr84i8",
-    types:["Verbal Abuse", "Bullying",],
-    status: "unreviewed",
-    username:"Kavya"
-  },
-  {
-    id: "m5gr84i11",
-    types:["Stalking"],
-    status: "unreviewed",
-    username:"Latha"
-  },
-]
+import { useRouter } from "next/navigation"
+import Loading from "../loading"
 
 export const columns= [
   {
@@ -94,6 +57,21 @@ export const columns= [
     },
     cell: ({ row }) => <div className="lowercase text-left">{row.getValue("username")}</div>,
   },
+  // {
+  //   accessorKey: "sevirity",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Severity
+  //         <ArrowUpDown />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => <div className="lowercase text-left">{row.getValue("severity")}</div>,
+  // },
   {
     accessorKey: "Type",
     header: () => <div className="text-right">Type(s)</div>,
@@ -135,14 +113,21 @@ export const columns= [
   // },
 ]
 
-export default function DataTableDemo() {
-  const [sorting, setSorting] = React.useState([])
-  const [columnFilters, setColumnFilters] = React.useState(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState({})
-  const [rowSelection, setRowSelection] = React.useState({})
+export default function DataTableDemo({data}) {
+
+  React.useEffect(()=>{
+    if(data.length>0){
+      data.forEach((each)=>{
+        each={...each,severity:each.types.length}
+      })
+    }
+  },[])
+  const [sorting, setSorting] = React.useState([]);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnVisibility, setColumnVisibility] =React.useState({});
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -154,17 +139,24 @@ export default function DataTableDemo() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
     },
   })
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center w-full h-full">
+        <div className="fixed top-0 left-[15rem] w-full h-full z-10 bg-black opacity-50"></div>
+        <div className="mt-20"><Loading /></div>
+      </div>
+    )
+  }
+
   return (
-    <div className="w-full">
+    <div className="w-full border-none bg-gray">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter Status..."
@@ -225,8 +217,14 @@ export default function DataTableDemo() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                onClick={
+                  () => {
+                    setIsLoading(true);
+                    router.push(`/admin/reports/${row.original.id}`)
+                  }
+                }
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

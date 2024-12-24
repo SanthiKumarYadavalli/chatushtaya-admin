@@ -17,21 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
-const reports = [
-  { month: "January", count: 186},
-  { month: "February", count: 290 },
-  { month: "March", count: 237 },
-  { month: "April", count: 73 },
-  { month: "May", count: 209 },
-  { month: "June", count: 214 },
-  { month: "July", count: 212 },
-  { month: "August", count: 204 },
-  { month: "September", count: 241 },
-  { month: "October", count: 222 },
-  { month: "November", count: 190 },
-  { month: "December", count: 280 },
-]
+import { useEffect, useState } from "react";
 
 const chartConfig = {
   count: {
@@ -40,15 +26,15 @@ const chartConfig = {
   }
 }
 
-export default function LineChartComponent() {
+export default function LineChartComponent({reports}) {
   return (
-    <Card>
+    <Card className="w-[90%] border-none">
       <CardHeader>
         <CardTitle>Reports Trend</CardTitle>
         <CardDescription>January - December</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer className=" w-full h-32 " config={chartConfig}>
+        <ChartContainer config={chartConfig}>
           <LineChart
             accessibilityLayer
             data={reports}
@@ -87,14 +73,6 @@ export default function LineChartComponent() {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-        <TrendingUp className="h-4 w-4" /> Increased by up to 5% this month 
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Highest Number of reports in January
-        </div>
-      </CardFooter>
     </Card>
   )
 }
