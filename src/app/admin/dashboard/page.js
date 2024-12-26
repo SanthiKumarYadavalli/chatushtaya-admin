@@ -1,143 +1,93 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 
 import TopReports from "./topReports";
 import LineChartComponent from "./LineChart";
-import CompletedReports from './completedReports'
+import PendingReports from "./pendingReports";
 
 import { fetchAllReports, fetchAllUsers } from "@/backend/utils";
 import Loading from "../loading";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
-export default function page() {
+
+export default function DashboardPage() {
   const [lineChartData, setLineChartData] = useState([]);
   const [topReportsData, setTopReportsData] = useState([]);
   const [superReportsData, setSuperReportsData] = useState([]);
-  const [completedReportsData, setCompletedReportsData] = useState([]);
+  const [pendingReportsData, setPendingReportsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
 
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
 
   function addUsers(reports) {
-    reports.forEach((report) => {
-      if (report.isAnonymous == true)
-        report.username = "Anonymous";
-      else {
-        const user = users.find(user => user.id == report.userId);
-        if (!user) {
-          report.username = "Anonymous";
-        } else {
-          report.username = user.username;
-        }
-      }
-    })
-    return reports;
+    return reports.map((report) => ({
+      ...report,
+      username: report.isAnonymous
+        ? "Anonymous"
+        : users.find((user) => user.id === report.userId)?.username || "Anonymous"
+    }));
   }
 
   function fetchLineChartData() {
-    const data = [
-      { month: "January", count: 0 },
-      { month: "February", count: 0 },
-      { month: "March", count: 0 },
-      { month: "April", count: 0 },
-      { month: "May", count: 0 },
-      { month: "June", count: 0 },
-      { month: "July", count: 0 },
-      { month: "August", count: 0 },
-      { month: "September", count: 0 },
-      { month: "October", count: 0 },
-      { month: "November", count: 0 },
-      { month: "December", count: 0 },
-    ]
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const data = months.map(month => ({ month, count: 0 }));
+    
     reports.forEach((report) => {
-      let idx = new Date(report.createdAt).getUTCMonth();
+      const idx = new Date(report.createdAt).getUTCMonth();
       data[idx].count += 1;
-    })
-    console.log(data);
+    });
+    
     return data;
   }
 
   useEffect(() => {
-    async function fetchReports() {
+    async function fetchData() {
       try {
-        const response = await fetchAllReports();
-        setReports(response);
-        const usersReports = await fetchAllUsers();
-        setUsers(usersReports);
+        const [reportsResponse, usersResponse] = await Promise.all([
+          fetchAllReports(),
+          fetchAllUsers()
+        ]);
+        setReports(reportsResponse);
+        setUsers(usersResponse);
       } catch (error) {
-        console.log(error);
-        throw error;
+        console.error("Error fetching data:", error);
       }
     }
-    fetchReports();
-  }, [])
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    if (reports.length > 0) {
-      const statusOrder = ["unreviewed", "pending"];
-      const selectedReports = reports.filter((report) => { return report.status == 'unreviewed' || report.status == 'pending' });
-      const filteredReports = selectedReports.sort((a, b) => {
-        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
-      });
-      setTopReportsData(addUsers(filteredReports));
-    }
-    setIsLoading(false);
-  }, [reports, users]);
-
-  useEffect(() => {
-    if (reports.length > 0) {
+    if (reports.length > 0 && users.length > 0) {
+      const selectedReports = reports.filter((report) => report.status == 'unreviewed');
+      setTopReportsData(addUsers(selectedReports));
       setLineChartData(fetchLineChartData());
-
-      //completed Reports 
-      const completedReports = [...reports].filter((report)=>{
-        return report.status == 'resolved'
-      });
-      setCompletedReportsData(completedReports);
-      
-      //Super Admin Reports
-      const superReports = [...reports].filter((report) =>{
-        return report.isSuperReport == true;
-      });
-      console.log(superReports);
-      setSuperReportsData(superReports);
+      setPendingReportsData(reports.filter((report) => report.status == 'pending'));
+      setSuperReportsData(reports.filter((report) => report.isSuperReport === true));
+      setIsLoading(false);
     }
-  }, [reports]);
+  }, [reports, users]);
 
   if (isLoading) {
     return <Loading />;
   }
 
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="w-full h-full rounded-lg border mt-[-62]"
-    >
-      <ResizablePanel defaultSize={50} className="h-[600px] border-none bg-gray">
-        <div className="flex h-full items-center justify-center border-none bg-gray overflow-y-auto">
-          <TopReports reports={topReportsData} />
-          {/* <TopReports reports={superReportsData} /> */}
+    <div className="flex flex-col w-full mt-[-64] min-h-screen h-full p-4 space-y-8">
+      <div className="w-full flex-grow overflow-y-auto border-none">
+        <TopReports reports={topReportsData} />
+      </div>
+      
+      <div className="w-full flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
+        <div className="w-full md:w-1/2 h-full">
+          <LineChartComponent reports={lineChartData} />
         </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={50} className="h-[600]">
-        <ResizablePanelGroup direction="vertical">
-          <ResizablePanel defaultSize={60}>
-            <div className="flex justify-center items-center">
-              <LineChartComponent reports = {lineChartData}/>
-            </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={40}>
-            <CompletedReports reports={completedReportsData}/>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+        <div className="w-full md:w-1/2 h-full">
+          <PendingReports reports={pendingReportsData} />
+        </div>
+      </div>
+    </div>
   );
 }
+

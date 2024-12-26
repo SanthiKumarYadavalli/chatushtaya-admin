@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -49,26 +48,26 @@ const chartConfig = {
   },
 }
 
-export default function Component({chartData}) {
-  const [timeRange, setTimeRange] = React.useState("365d")
+export default function Component({ chartData }) {
+  const [timeRange, setTimeRange] = React.useState("365d");
 
   const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-12-27")
-    let daysToSubtract = 365
+    const date = new Date(item.date);
+    const referenceDate = new Date();
+    let daysToSubtract = 365;
     if (timeRange === "185d") {
-      daysToSubtract = 185
+      daysToSubtract = 185;
     } else if (timeRange === "90d") {
-      daysToSubtract = 90
-    }else if (timeRange === "30d") {
-      daysToSubtract = 30
-    }else if (timeRange === "7d") {
-      daysToSubtract = 7
+      daysToSubtract = 90;
+    } else if (timeRange === "30d") {
+      daysToSubtract = 30;
+    } else if (timeRange === "7d") {
+      daysToSubtract = 7;
     }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+    const startDate = new Date(referenceDate);
+    startDate.setDate(startDate.getDate() - daysToSubtract);
+    return date >= startDate;
+  });
 
   return (
     <Card className="border-none">
@@ -87,7 +86,7 @@ export default function Component({chartData}) {
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-          <SelectItem value="365d" className="rounded-lg">
+            <SelectItem value="365d" className="rounded-lg">
               Last 12 months
             </SelectItem>
             <SelectItem value="185d" className="rounded-lg">
@@ -169,13 +168,15 @@ export default function Component({chartData}) {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value)
+                const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
-                })
+                });
               }}
+              
             />
+
             <ChartTooltip
               cursor={false}
               content={
@@ -184,7 +185,7 @@ export default function Component({chartData}) {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
                   indicator="dot"
                 />
@@ -223,5 +224,5 @@ export default function Component({chartData}) {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

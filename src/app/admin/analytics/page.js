@@ -44,6 +44,9 @@ export default function Analytics() {
         response.push(reportData);
       }
     });
+    response.sort((a,b)=>{
+      return new Date(a.date)- new Date(b.date)
+    })
     return response;
   }
 
@@ -111,7 +114,9 @@ export default function Analytics() {
         existingReport[type]+=1;
       });
     })
-    console.log(response);
+    response.sort((a,b)=>{
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    })
     return response;
   }
 
