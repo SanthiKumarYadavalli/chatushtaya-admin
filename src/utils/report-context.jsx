@@ -10,7 +10,7 @@ const getInitialState = () => {
 
 export const ReportProvider = ({ children }) => {
     const [data, setData] = useState(getInitialState);
-    const [selectedType, setSelectedType] = useState("all");
+    const [selectedType, setSelectedType] = useState("All");
     const [selectedStatus, setSelectedStatus] = useState("unreviewed");
     return (
         <ReportContext.Provider value={{ data, setData, selectedType, setSelectedType, selectedStatus, setSelectedStatus }}>

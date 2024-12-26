@@ -81,10 +81,10 @@ export default function TopReports({ reports }) {
   };
 
   return (
-    <Card className="col-span-1 flex flex-col h-[575] shadow-md border-none bg-gray">
-      <CardDescription className="flex flex-col h-[560] p-4 bg-black/[.05] rounded-lg bg-gray">
-        <div className="flex justify-between items-center scrollable">
-          <CardTitle className="text-xl font-semibold">Top Reports</CardTitle>
+    <Card className="col-span-1 w-full flex flex-col h-full border-none overflow-y-auto">
+      <CardDescription className="flex flex-col p-2 border-none rounded-lg bg-gray w-full ">
+        <div className="flex justify-between items-center overflow-y-auto">
+          <CardTitle className="text-xl font-semibold">Recent Reports</CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">

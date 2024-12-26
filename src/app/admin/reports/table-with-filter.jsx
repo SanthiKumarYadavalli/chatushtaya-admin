@@ -31,11 +31,11 @@ export default function TableWithFilter() {
   }
 
   const filteredData = data.filter(
-    (row) => (row.status === selectedStatus || selectedStatus === "all") &&
-             (row.types.some(x => x.toLowerCase() === selectedType.toLowerCase()) || selectedType === "all")
+    (row) => (row.status === selectedStatus || selectedStatus === "All") &&
+             (row.types.some(x => x.toLowerCase() === selectedType.toLowerCase()) || selectedType === "All")
   );
   const all_types = [
-    "all",
+    "All",
     "Verbal Abuse",
     "Sexual Harassment",
     "Bullying",
@@ -67,7 +67,7 @@ export default function TableWithFilter() {
             <SelectValue>{selectedStatus}</SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="All">All</SelectItem>
             <SelectItem value="unreviewed">Unreviewed</SelectItem>
             <SelectItem value="pending">
               Pending

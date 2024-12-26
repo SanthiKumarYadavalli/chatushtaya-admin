@@ -9,17 +9,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -33,98 +29,88 @@ import {
 } from "@/components/ui/table"
 import { useRouter } from "next/navigation"
 import Loading from "../loading"
+import moment from "moment"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-export const columns= [
+export const columns = [
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="text-left">{row.getValue("status")}</div>
     ),
   },
   {
-    accessorKey: "username",
+    accessorKey: "datetime",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Reported By
+          Incident Time
           <ArrowUpDown />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase text-left">{row.getValue("username")}</div>,
+    cell: ({ row }) => {
+        const date = row.getValue("datetime");
+        return (
+          <div className="text-left ml-6">
+            {moment(date).fromNow()}
+          </div>  
+          )
+    },
+    sortDescFirst: true
   },
-  // {
-  //   accessorKey: "sevirity",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Severity
-  //         <ArrowUpDown />
-  //       </Button>
-  //     )
-  //   },
-  //   cell: ({ row }) => <div className="lowercase text-left">{row.getValue("severity")}</div>,
-  // },
   {
-    accessorKey: "Type",
-    header: () => <div className="text-right">Type(s)</div>,
+    accessorKey: "severity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+          Severity
+          <ArrowUpDown />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      const severity = row.getValue("severity");
+      return (
+        <div className="text-center ml-[-20]">
+          <span className={`px-2 py-1 rounded-full text-xs font-semibold 'bg-gradient-to-r from-green-400 to-blue-500 text-white'} transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-md`}>
+            {`${severity?severity:"unknown"}`}
+          </span>
+        </div>
+      );
+    },
+    sortDescFirst: true
+  },
+  {
+    accessorKey: "location",
+    header: "Location",
+    cell: ({ row }) => (
+      <div className="text-left ml-3">{row.getValue("location")}</div>
+    ),
+  },
+  {
+    accessorKey: "type",
+    header: () => <div>Type(s)</div>,
     cell: ({ row }) => {
       const type = row.original.types;
       const formatted = type.join(', ');
-      // const formatted = "Types";
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-left font-medium">{formatted}</div>
     },
   },
-  // {
-  //   id: "actions",
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const payment = row.original
-
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuItem
-  //             onClick={() => navigator.clipboard.writeText(payment.id)}
-  //           >
-  //             Copy payment ID
-  //           </DropdownMenuItem>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem>View customer</DropdownMenuItem>
-  //           <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     )
-  //   },
-  // },
 ]
 
-export default function DataTableDemo({data}) {
-
-  React.useEffect(()=>{
-    if(data.length>0){
-      data.forEach((each)=>{
-        each={...each,severity:each.types.length}
-      })
-    }
-  },[])
+export default function DataTableDemo({ data }) {
+  console.log([...data]);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
-  const [columnVisibility, setColumnVisibility] =React.useState({});
+  const [columnVisibility, setColumnVisibility] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false)
 
   const router = useRouter();
@@ -135,7 +121,6 @@ export default function DataTableDemo({data}) {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -156,13 +141,13 @@ export default function DataTableDemo({data}) {
   }
 
   return (
-    <div className="w-full border-none bg-gray">
-      <div className="flex items-center py-4">
+    <div className="w-full border-none overflow-y-auto">
+      <div className="flex items-center py-4 border-none">
         <Input
-          placeholder="Filter Status..."
-          value={(table.getColumn("status")?.getFilterValue()) ?? ""}
+          placeholder="Filter Location..."
+          value={String((table.getColumn("location")?.getFilterValue()) ?? "")}
           onChange={(event) =>
-            table.getColumn("status")?.setFilterValue(event.target.value)
+            table.getColumn("location")?.setFilterValue(String(event.target.value))
           }
           className="max-w-sm"
         />
@@ -193,62 +178,57 @@ export default function DataTableDemo({data}) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+      <div className="border rounded-md">
+        <ScrollArea className="h-[400px]">
+          <Table>
+            <TableHeader >
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="sticky top-0 bg-background ">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                onClick={
-                  () => {
-                    setIsLoading(true);
-                    router.push(`/admin/reports/${row.original.id}`)
-                  }
-                }
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="align-center text-center"
+                    onClick={() => {
+                      setIsLoading(true);
+                      router.push(`/admin/reports/${row.original.id}`)
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </ScrollArea>
       </div>
     </div>
   )
 }
+

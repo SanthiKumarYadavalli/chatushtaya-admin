@@ -28,7 +28,7 @@ const chartConfig = {
 
 export default function LineChartComponent({reports}) {
   return (
-    <Card className="w-[90%] border-none">
+    <Card className="w-full border-none">
       <CardHeader>
         <CardTitle>Reports Trend</CardTitle>
         <CardDescription>January - December</CardDescription>
