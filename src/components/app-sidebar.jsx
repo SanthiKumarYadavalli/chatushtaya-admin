@@ -52,7 +52,7 @@ export function AppSidebar() {
             <SidebarMenuButton asChild className="h-12">
               <Avatar>
                 <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8 mr-2"/>
-                <span>Krishna Dashboard</span>
+                <span>{localStorage.getItem("name")}  Dashboard</span>
               </Avatar>
             </SidebarMenuButton>
           </SidebarMenuItem>

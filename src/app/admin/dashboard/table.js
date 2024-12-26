@@ -5,7 +5,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
@@ -68,12 +67,18 @@ export const columns = [
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-          Severity
-          <ArrowUpDown />
-        </Button>
+  variant="ghost"
+  onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  className="flex items-center justify-start bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-400 to-black"
+>
+  <span className="text-center ml-2 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-400 to-gray">
+    Severity
+  </span>
+  
+  {/* Arrow Icon */}
+  <ArrowUpDown/>
+</Button>
+
       )
     },
     cell: ({ row }) => {
