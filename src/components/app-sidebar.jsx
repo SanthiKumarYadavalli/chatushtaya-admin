@@ -1,8 +1,9 @@
 "use client";
-import { Contact, Home, Inbox, LogOut } from "lucide-react"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import Link from "next/link"
+import { Contact, Home, Inbox, LogOut, ChartLine } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ConfirmationDialog } from "./confirmation-dialog";
 
 import {
   Sidebar,
@@ -15,8 +16,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { Separator } from "./ui/separator";
+import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
 
 // Menu items.
 const items = [
@@ -38,54 +41,74 @@ const items = [
   {
     title: "Analytics",
     url: "/admin/analytics",
-    icon: Inbox,
+    icon: ChartLine,
   },
-]
+];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { logout } = useAuth();
+  const [logoutDiaglog, setLogoutDialog] = useState(false);
   return (
-    <Sidebar variant="inset">
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="h-12">
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" className="w-8 h-8 mr-2"/>
-                <span>{localStorage.getItem("name")}  Dashboard</span>
-              </Avatar>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-      <Separator orientation="horizontal" className="my-2"/>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title} className="h-10">
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span className="text-base">{item.title}</span>
-                    </Link>
+    <>
+      <Sidebar variant="inset">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild className="h-12">
+                <Avatar>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    className="w-8 h-8 mr-2"
+                  />
+                  <span>Krishna Dashboard</span>
+                </Avatar>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <Separator orientation="horizontal" className="my-2" />
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {items.map((item) => (
+                  <SidebarMenuItem key={item.title} className="h-10">
+                    <SidebarMenuButton asChild isActive={pathname === item.url}>
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span className="text-base">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                <Separator orientation="horizontal" className="my-2" />
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    onClick={() => setLogoutDialog(true)}
+                  >
+                    <button>
+                      <LogOut />
+                      <span>Logout</span>
+                    </button>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-              <Separator orientation="horizontal" className="my-2"/>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <button>
-                    <LogOut />
-                    <span>Logout</span>
-                  </button>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
-  )
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      {logoutDiaglog && (
+        <ConfirmationDialog
+          isOpen={logoutDiaglog}
+          onClose={() => setLogoutDialog(false)}
+          onConfirm={() => logout()}
+          title="Confirm Logout"
+          message={`Are you sure you want to logout?`}
+          submitting={false}
+        />
+      )}
+    </>
+  );
 }

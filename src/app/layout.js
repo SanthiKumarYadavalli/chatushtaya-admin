@@ -2,6 +2,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { ReportProvider } from "@/utils/report-context";
+import { AuthProvider } from "@/context/AuthContext";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +32,10 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <ReportProvider>
-            {children}
+            <AuthProvider>{children}</AuthProvider>
           </ReportProvider>
+          <ThemeToggleButton classes="fixed right-7 bottom-5 z-10" />
+          <Toaster position="top-right" />
         </ThemeProvider>
       </body>
     </html>
