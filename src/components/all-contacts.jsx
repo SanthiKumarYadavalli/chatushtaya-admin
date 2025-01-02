@@ -1,20 +1,3 @@
-// import {
-//     Card,
-//     CardContent,
-//     CardDescription,
-//     CardFooter,
-//     CardHeader,
-//     CardTitle,
-// } from "@/components/ui/card"
-
-// export default function AllContacts() {
-//     return (
-//         <div className="p-3">
-
-//         </div>
-//     )
-// }
-
 import { HoverEffect } from "./ui/card-hover-effect";
 const data = [
   {

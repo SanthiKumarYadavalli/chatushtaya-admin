@@ -151,14 +151,17 @@ export const HoverEffect = ({ items, setItems, className }) => {
           <Card>
             <div className="flex justify-between items-center">
               <CardTitle>{item.name}</CardTitle>
+              <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className = "bg-green-500 text-white hover:bg-green-600 border border-solid"
+                className = "text-black border dark:text-white dark:border-white border-black"
                 onClick={() => handleEdit(idx)}
               >
                 Edit
               </Button>
+              <Button variant="destructive" size="sm">Delete</Button>
+              </div>
             </div>
             <CardDescription>{item.description}</CardDescription>
             <div className="mt-4 text-sm text-zinc-400">
