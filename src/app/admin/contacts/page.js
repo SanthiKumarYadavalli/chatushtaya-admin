@@ -4,29 +4,39 @@ import React, { useState } from 'react';
 import AllContacts from '@/components/all-contacts';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'; 
-import { Label} from '@/components/ui/label'; // Replace with your input and label component import paths
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { addContact } from '@/backend/utils';
 
 export default function Page() {
   const [isAdding, setIsAdding] = useState(false);
   const [newContact, setNewContact] = useState({
-    name: '',
+    title: '',
     description: '',
-    mobile: '',
+    phoneNumber: '',
     whatsapp: '',
     email: '',
   });
+  const [isSaving, setIsSaving] = useState(false); // To manage saving state
 
-  const handleAddContact = () => {
-    console.log("New contact added:", newContact);
-    setIsAdding(false); // Close the dialog after saving
-    setNewContact({
-      name: '',
-      description: '',
-      mobile: '',
-      whatsapp: '',
-      email: '',
-    }); // Reset the form
+  const handleAddContact = async () => {
+    setIsSaving(true);
+    try {
+      await addContact(newContact); // Call the function to save the contact
+      console.log("New contact added:", newContact);
+      setIsAdding(false); // Close the dialog
+      setNewContact({
+        title: '',
+        description: '',
+        phoneNumber: '',
+        whatsapp: '',
+        email: '',
+      }); // Reset the form
+    } catch (error) {
+      console.error("Error adding contact:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -55,12 +65,12 @@ export default function Page() {
             }}
           >
             <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="title">Name</Label>
               <Input
-                id="name"
-                value={newContact.name}
+                id="title"
+                value={newContact.title}
                 onChange={(e) =>
-                  setNewContact({ ...newContact, name: e.target.value })
+                  setNewContact({ ...newContact, title: e.target.value })
                 }
               />
             </div>
@@ -78,12 +88,12 @@ export default function Page() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="mobile">Mobile</Label>
+              <Label htmlFor="phoneNumber">Mobile</Label>
               <Input
-                id="mobile"
-                value={newContact.mobile}
+                id="phoneNumber"
+                value={newContact.phoneNumber}
                 onChange={(e) =>
-                  setNewContact({ ...newContact, mobile: e.target.value })
+                  setNewContact({ ...newContact, phoneNumber: e.target.value })
                 }
               />
             </div>
@@ -111,10 +121,16 @@ export default function Page() {
               />
             </div>
             <div className="flex justify-end gap-4">
-              <Button variant="outline" onClick={() => setIsAdding(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsAdding(false)}
+                disabled={isSaving}
+              >
                 Cancel
               </Button>
-              <Button type="submit">Save Contact</Button>
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Contact"}
+              </Button>
             </div>
           </form>
         </DialogContent>
