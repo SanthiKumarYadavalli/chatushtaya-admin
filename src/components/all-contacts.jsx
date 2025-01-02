@@ -1,20 +1,3 @@
-// import {
-//     Card,
-//     CardContent,
-//     CardDescription,
-//     CardFooter,
-//     CardHeader,
-//     CardTitle,
-// } from "@/components/ui/card"
-
-// export default function AllContacts() {
-//     return (
-//         <div className="p-3">
-
-//         </div>
-//     )
-// }
-
 import { HoverEffect } from "./ui/card-hover-effect";
 const data = [
   {
@@ -98,11 +81,41 @@ const data = [
     email: "emily.davis@example.com",
   },
 ];
+import React, { useState, useEffect } from "react";
+import { fetchContacts } from "@/backend/utils";
 
 export default function CardHoverEffectDemo() {
+  const [contacts, setContacts] = useState([]); // State to hold fetched contacts
+  const [loading, setLoading] = useState(true); // State to handle loading status
+  const [error, setError] = useState(null); // State to handle errors
+
+  useEffect(() => {
+    const loadContacts = async () => {
+      try {
+        const fetchedContacts = await fetchContacts();
+        setContacts(fetchedContacts); // Update the state with fetched data
+        setLoading(false); // Data fetching is complete
+      } catch (err) {
+        console.error("Failed to fetch contacts:", err);
+        setError("Failed to load contacts.");
+        setLoading(false); // End loading even if there's an error
+      }
+    };
+
+    loadContacts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>; // Display a loading message while fetching data
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>; // Display an error message if something goes wrong
+  }
+
   return (
-    <div className=" mx-auto px-8">
-      <HoverEffect items={data} />
+    <div className="mx-auto px-8">
+      <HoverEffect items={contacts} />
     </div>
   );
 }
