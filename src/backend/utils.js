@@ -23,24 +23,26 @@ export const userReportCounts = async (id) => {
 
 export const loginUser = async ({ email, password }) => {
   try {
-    const userCollection = collection(firestore, 'admin-data');
+    const userCollection = collection(firestore, "admin-data");
     const q = query(
       userCollection,
-      where('email', '==', email),
-      where('password', '==', password)
+      where("email", "==", email),
+      where("password", "==", password)
     );
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      return true; // User is authenticated
+      // Extract the first user's data
+      const userDoc = querySnapshot.docs[0];
+      return { id: userDoc.id, ...userDoc.data() };
     }
-    return false; // Authentication failed
+
+    return null; // Return null if authentication fails
   } catch (error) {
-    console.error('Error logging in user:', error.message);
-    throw error;
+    console.error("Error logging in user:", error.message);
+    throw error; // Propagate the error
   }
 };
-
 
 // export const registerUser = async (data) => {
 //   const { email, password } = data;
@@ -139,7 +141,7 @@ export const fetchReportsByQuery = async (filters) => {
 };
 
 const getCleanedReportData = (reports) => {
-  reports.map(report => {
+  reports.map((report) => {
     report.date = report.date.toDate();
     report.time = report.time.toDate();
     report.createdAt = report.createdAt.toDate();
@@ -149,17 +151,34 @@ const getCleanedReportData = (reports) => {
     return report;
   });
   return reports;
-}
+};
 
 export const fetchAllReports = async () => {
   try {
     const reportsCollection = collection(firestore, "reports");
-    const reportSnapshot = await getDocs(query(reportsCollection, orderBy("createdAt", "desc")));
+    const reportSnapshot = await getDocs(
+      query(reportsCollection, orderBy("createdAt", "desc"))
+    );
     const reportsList = reportSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
     return getCleanedReportData(reportsList);
+  } catch (error) {
+    console.error("Error fetching reports:", error);
+    throw error;
+  }
+};
+
+export const fetchAllUsers = async () => {
+  try {
+    const usersCollection = collection(firestore, "members");
+    const userSnapShot = await getDocs(query(usersCollection));
+    const usersList = userSnapShot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return usersList;
   } catch (error) {
     console.error("Error fetching reports:", error);
     throw error;
