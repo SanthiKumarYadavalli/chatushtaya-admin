@@ -32,7 +32,6 @@ export const loginUser = async ({ email, password }) => {
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      // Extract the first user's data
       const userDoc = querySnapshot.docs[0];
       return { id: userDoc.id, ...userDoc.data() };
     }

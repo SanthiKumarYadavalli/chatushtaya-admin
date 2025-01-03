@@ -25,14 +25,15 @@ export function LoginForm({ className, ...props }) {
       setIsLoading(true);
       const res = await loginUser({ email, password });
       await login(res);
-      toast.success("Login successfully");
-      if (res.role === "admin") {
-        router.push("/admin/dashboard");
-      } else {
-        // router.push("..")
+      if(res!==null){
+        toast.success("Login successfully");
+        router.push('admin/dashboard');
+      }
+      else{
+        toast.error("Invalid email or password. Please try again.");
       }
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
+        console.log(err);
     } finally {
       setIsLoading(false);
     }
