@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { utils, writeFile } from "xlsx";
 import {
   Select,
   SelectContent,
@@ -12,6 +13,8 @@ import { columns } from "./columns";
 import { useReports } from "@/utils/report-context";
 import { fetchAllReports } from "@/backend/utils";
 import Loading from "../loading";
+import { Button } from "@/components/ui/button";
+import {  Download } from "lucide-react";
 
 export default function TableWithFilter() {
   const { data, setData, selectedStatus, selectedType, setSelectedStatus, setSelectedType } = useReports();
@@ -45,6 +48,13 @@ export default function TableWithFilter() {
     "Abuse of Authority by staff or faculty",
   ];
 
+  const exportToExcel = ()=>{
+    const worksheet = utils.json_to_sheet(filteredData);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Reports");
+    writeFile(workbook, "filtered_reports.xlsx");
+  }
+
   return (
     <div className="flex flex-col items-end">
       <div className="flex gap-4">
@@ -75,6 +85,7 @@ export default function TableWithFilter() {
             <SelectItem value="resolved">Resolved</SelectItem>
           </SelectContent>
         </Select>
+        <Button onClick={exportToExcel}>Download <Download /> </Button>
       </div>
       <DataTable columns={columns} data={filteredData} />
     </div>

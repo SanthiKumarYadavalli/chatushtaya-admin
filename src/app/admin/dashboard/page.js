@@ -7,6 +7,7 @@ import PendingReports from "./pendingReports";
 
 import { fetchAllReports, fetchAllUsers } from "@/backend/utils";
 import Loading from "../loading";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardPage() {
   const [lineChartData, setLineChartData] = useState([]);
@@ -17,6 +18,7 @@ export default function DashboardPage() {
 
   const [reports, setReports] = useState([]);
   const [users, setUsers] = useState([]);
+  const {user} = useAuth();
 
   function addUsers(reports) {
     return reports.map((report) => ({
@@ -76,7 +78,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col w-full mt-[-64] min-h-screen h-full p-4 space-y-8">
       <div className="w-full flex-grow overflow-y-auto border-none">
-      {localStorage.getItem("role")?.toLowerCase()==="super-admin"?<TopReports reports={superReportsData} />:<TopReports reports={topReportsData} />}
+      {user.role=="super-admin"?<TopReports reports={superReportsData} />:<TopReports reports={topReportsData} />}
       </div>
       
       <div className="w-full flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
